@@ -5,7 +5,6 @@ import Moment from "react-moment"
 import { signIn, useSession } from "next-auth/react";
 import { db, storage } from "../firebase";
 import { useEffect, useState } from "react";
-import { async } from "@firebase/util";
 import { deleteObject, ref } from "firebase/storage";
 
 const Post = ({post}) => {
@@ -47,7 +46,9 @@ const Post = ({post}) => {
         if(window.confirm('Delete this Post ?')){
 
             deleteDoc(doc(db,'posts',post.id));
-            deleteObject(ref(storage,`posts/${post.id}/image`));
+            if(post.data().image){
+                deleteObject(ref(storage,`posts/${post.id}/image`));
+            }
         }
     }
   
@@ -75,8 +76,8 @@ const Post = ({post}) => {
             <p className="text-gray-800 text-[15px] sm:text-[16px] mb-2">{post.data().text}</p>
 
             {/* post image */}
-            <img src={post.data().image} alt="post image" className="rounded-2xl mr-2" />
-
+            {post.data().image && <img src={post.data().image} alt="post image" className="rounded-2xl mr-2" /> }
+            
             {/* actions icons */}
             <div className="flex justify-between text-gray-500 p-2">
                 <ChatIcon className="w-9 h-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100"/>
