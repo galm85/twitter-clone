@@ -1,29 +1,46 @@
 import { SparklesIcon } from "@heroicons/react/outline"
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore"
+import { useEffect, useState } from "react"
+import { db } from "../firebase"
 import Input from "./Input"
 import Post from "./Post"
 
 const Feed = () => {
 
-  const posts = [
-    {
-      id:"1",
-      name:'Gal Mizrahi',
-      username:'galmizrahi',
-      userImg:'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80',
-      img:"https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2948&q=80",
-      text:"nice view",
-      timestamp:"2 hours ago"
-    },
-    {
-      id:"2",
-      name:'Gal Mizrahi',
-      username:'galmizrahi',
-      userImg:'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80',
-      img:"https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80",
-      text:"sunset",
-      timestamp:"3 days ago"
-    },
-  ]
+
+  const [posts,setPosts] = useState([]);
+
+  useEffect(()=>{
+    return onSnapshot(
+      query(collection(db,"posts"), orderBy('timestemp',"desc")),
+      (snapshot)=>{
+        setPosts(snapshot.docs)
+      });
+      
+  },[]);
+
+  
+
+  // const posts = [
+  //   {
+  //     id:"1",
+  //     name:'Gal Mizrahi',
+  //     username:'galmizrahi',
+  //     userImg:'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80',
+  //     img:"https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2948&q=80",
+  //     text:"nice view",
+  //     timestamp:"2 hours ago"
+  //   },
+  //   {
+  //     id:"2",
+  //     name:'Gal Mizrahi',
+  //     username:'galmizrahi',
+  //     userImg:'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80',
+  //     img:"https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80",
+  //     text:"sunset",
+  //     timestamp:"3 days ago"
+  //   },
+  // ]
 
   
     return (
