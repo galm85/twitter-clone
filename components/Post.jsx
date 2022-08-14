@@ -13,6 +13,7 @@ const Post = ({post}) => {
   
     const {data:session} = useSession();
     const [likes,setLikes] = useState([]);
+    const [comments,setComments] = useState([]);
     const [hasLiked,setHasLiked] = useState(false);
     const [open,setOpen] = useRecoilState(modalState);
     const [postId,setPostId] = useRecoilState(postIdState);
@@ -22,6 +23,15 @@ const Post = ({post}) => {
             collection(db,'posts',post.id,"likes"),
             (snapshot)=>{
                 setLikes(snapshot.docs);
+            }
+        )
+    },[db])
+
+    useEffect(()=>{
+        const unsubscribe = onSnapshot(
+            collection(db,'posts',post.id,"comments"),
+            (snapshot)=>{
+                setComments(snapshot.docs);
             }
         )
     },[db])
@@ -63,7 +73,7 @@ const Post = ({post}) => {
 
 
         {/* right side */}
-        <div>
+        <div className="flex-1">
             {/* header */}
             <div className="flex items-center justify-between">
                 {/* host user info */}
@@ -85,20 +95,26 @@ const Post = ({post}) => {
             {/* actions icons */}
             <div className="flex justify-between text-gray-500 p-2">
                 
-                <ChatIcon 
-                    className="w-9 h-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100" 
-                    onClick={()=>{
+                {/* comments icon */}
+                <div className="flex items-center">
+                    <ChatIcon 
+                        className="w-9 h-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100" 
+                        onClick={()=>{
                             if(!session){
                                 signIn();
                             }else{
                                 setPostId(post.id);
                                 setOpen(!open);
                             }
-                            }}
-                />                                                                                                 
+                        }}
+                        />   
+                    {comments.length > 0 && <span className="text-sm select-none"  >{comments.length}</span> }                                                                                             
+                </div>
                 
+                {/* trash icon */}
                 {session?.user.uid === post?.data().id && <TrashIcon className="w-9 h-9 hoverEffect p-2 hover:text-red-600 hover:bg-red-100" onClick={deletePost}/> }
                 
+                {/* like icons */}
                 <div className="flex items-center">
                     {hasLiked ? ( 
                             <HeartIconFilled onClick={likePosts} className="w-9 h-9 hoverEffect p-2 text-red-600 hover:bg-red-100"/>

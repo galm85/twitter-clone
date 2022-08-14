@@ -3,15 +3,16 @@ import {modalState, postIdState} from '../atom/modalAtom';
 import Modal from 'react-modal';
 import { useEffect,useState } from 'react';
 import { db } from '../firebase';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { addDoc, collection, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
 import Moment from "react-moment"
 import { useSession } from 'next-auth/react';
 import { EmojiHappyIcon, PhotographIcon, XIcon } from "@heroicons/react/outline";
-
+import { useRouter } from 'next/router';
 
 
 const CommentModel = () => {
 
+    const router = useRouter();
     const {data:session} = useSession();
     const [open,setOpen] = useRecoilState(modalState);
     const [postId] = useRecoilState(postIdState);
@@ -24,8 +25,18 @@ const CommentModel = () => {
     },[postId,db])
 
 
-    const sendComment = ()=>{
+    const sendComment = async()=>{
+        await addDoc(collection(db,'posts',postId,'comments'),{
+            comment:input,
+            name:session.user.name,
+            username:session.user.username,
+            userImg:session.user.image,
+            timestemp:serverTimestamp()
+        })
 
+        setOpen(false);
+        setInput('');
+        router.push(`/posts/${postId}`);
     }
   
     return (
@@ -48,7 +59,7 @@ const CommentModel = () => {
                         </div>
                     </div>
 
-                    {/* body modal */}
+                    {/* post data section */}
                     <div className='p-2 flex items-center space-x-1 relative '>
                         <span className='w-0.5 h-full z-[-1] absolute left-8 top-11 bg-gray-300'/>
                         <img src={post?.data()?.userImg} alt="user image" className="h-11 w-11 rounded-full mr-4" />
@@ -59,6 +70,7 @@ const CommentModel = () => {
                         </span>
                     </div>
                     <p className='text-gray-500 text-[15px] sm:text-[16px] ml-16 mb-2'>{post?.data()?.text}</p>
+
 
                     {/* comments section */}
                     
