@@ -7,7 +7,7 @@ import { db, storage } from "../firebase";
 import { useEffect, useState } from "react";
 import { deleteObject, ref } from "firebase/storage";
 import { useRecoilState } from "recoil";
-import { modalState } from "../atom/modalAtom";
+import { modalState, postIdState } from "../atom/modalAtom";
 
 const Post = ({post}) => {
   
@@ -15,6 +15,7 @@ const Post = ({post}) => {
     const [likes,setLikes] = useState([]);
     const [hasLiked,setHasLiked] = useState(false);
     const [open,setOpen] = useRecoilState(modalState);
+    const [postId,setPostId] = useRecoilState(postIdState);
 
     useEffect(()=>{
         const unsubscribe = onSnapshot(
@@ -83,7 +84,19 @@ const Post = ({post}) => {
             
             {/* actions icons */}
             <div className="flex justify-between text-gray-500 p-2">
-                <ChatIcon className="w-9 h-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100" onClick={()=>setOpen(!open)}/>
+                
+                <ChatIcon 
+                    className="w-9 h-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100" 
+                    onClick={()=>{
+                            if(!session){
+                                signIn();
+                            }else{
+                                setPostId(post.id);
+                                setOpen(!open);
+                            }
+                            }}
+                />                                                                                                 
+                
                 {session?.user.uid === post?.data().id && <TrashIcon className="w-9 h-9 hoverEffect p-2 hover:text-red-600 hover:bg-red-100" onClick={deletePost}/> }
                 
                 <div className="flex items-center">
@@ -95,6 +108,7 @@ const Post = ({post}) => {
                     }
                     {likes.length > 0 && <span className={`${hasLiked && 'text-red-600'} text-sm select-none`}  >{likes.length}</span> }
                 </div>
+
                 <ShareIcon className="w-9 h-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100"/>
                 <ChartBarIcon className="w-9 h-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100"/>
             </div>
