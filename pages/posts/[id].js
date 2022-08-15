@@ -10,6 +10,7 @@ import { db } from '../../firebase';
 import { collection, doc, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { comment } from 'postcss';
 import Comment from '../../components/Comment';
+import { AnimatePresence ,motion} from 'framer-motion';
 
 
 export default function PostPage({newsResults,randomUsersResults}) {
@@ -71,9 +72,13 @@ export default function PostPage({newsResults,randomUsersResults}) {
             {/* comments render */}
             {comments.length > 0 && (
               <div>
+                <AnimatePresence>
                 {comments.map(comment=>(
-                  <Comment key={comment.id} originalPostId={id} commentId={comment.id} comment={comment.data()}/>
+                  <motion.div key={comment.id} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:1}}>
+                    <Comment key={comment.id} originalPostId={id} commentId={comment.id} comment={comment.data()}/>
+                  </motion.div>
                   ))}
+                </AnimatePresence>
               </div> 
             )}
 

@@ -8,7 +8,7 @@ const Signin = ({providers}) => {
 
         <div className=''>
             {Object.values(providers).map((provider)=>(
-                <div className='flex flex-col items-center'>
+                <div key={provider.name} className='flex flex-col items-center'>
                     <img className='w-36 object-cover'  src="https://www.pngkey.com/png/full/2-27646_twitter-logo-png-transparent-background-logo-twitter-png.png" alt="" />
                     <p className='text-center text-sm italic my-10'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Mollitia, sint.</p>
                     <button onClick={()=>signIn(provider.id,{callbackUrl:"/"})} className='bg-red-400 rounded-lg p-3 text-white hover:bg-red-500'>Sign In with {provider.name}</button>
