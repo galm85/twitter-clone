@@ -73,7 +73,7 @@ const Post = ({post,id}) => {
         <div className="flex p-3 cursor-pointer border-b border-gray-200">
             
             {/*user image (ledt side) */}
-            <img src={post?.data()?.userImg} alt="user image" className="h-11 w-11 rounded-full mr-4" />
+            <img  src={post?.data()?.userImg} alt="user image" className="h-11 w-11 rounded-full mr-4" />
 
 
             {/* right side */}
@@ -91,10 +91,10 @@ const Post = ({post,id}) => {
                 </div>
 
                 {/* post text */}
-                <p className="text-gray-800 text-[15px] sm:text-[16px] mb-2">{post?.data()?.text}</p>
+                <p onClick={()=>router.push(`/posts/${id}`)} className="text-gray-800 text-[15px] sm:text-[16px] mb-2">{post?.data()?.text}</p>
 
                 {/* post image */}
-                {post?.data()?.image && <img src={post?.data()?.image} alt="post image" className="rounded-2xl mr-2" /> }
+                {post?.data()?.image && <img onClick={()=>router.push(`/posts/${id}`)} src={post?.data()?.image} alt="post image" className="rounded-2xl mr-2" /> }
                 
                 {/* actions icons */}
                 <div className="flex justify-between text-gray-500 p-2">

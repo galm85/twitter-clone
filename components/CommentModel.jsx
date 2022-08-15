@@ -31,7 +31,8 @@ const CommentModel = () => {
             name:session.user.name,
             username:session.user.username,
             userImg:session.user.image,
-            timestemp:serverTimestamp()
+            timestemp:serverTimestamp(),
+            userId:session.user.uid
         })
 
         setOpen(false);
